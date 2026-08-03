@@ -33,6 +33,7 @@ contract CrowdFund {
     );
     event CancelCampaign(uint256 indexed campaignId);
     event Pledge(uint256 indexed campaignId, address indexed donor, uint256 amount);
+    event Unpledge(uint256 indexed campaignId, address indexed donor, uint256 amount);
 
     constructor(address _token) {
         token = IERC20(_token);
@@ -64,5 +65,15 @@ contract CrowdFund {
         pledgeAmount[_campaignId][msg.sender] += _amount;
         token.transferFrom(msg.sender, address(this), _amount);
         emit Pledge(_campaignId, msg.sender, _amount);
+    }
+
+    function unpledge(uint256 _campaignId, uint256 _amount) external {
+        Campaign storage campaign = campaigns[_campaignId];
+        require(block.timestamp < campaign.deadline, "Cannot unpledge after deadline");
+        require(pledgeAmount[_campaignId][msg.sender] >= _amount, "Not enough pledged amount to unpledge");
+        campaign.amountCollected -= _amount;
+        pledgeAmount[_campaignId][msg.sender] -= _amount;
+        token.transfer(msg.sender, _amount);
+        emit Unpledge(_campaignId, msg.sender, _amount);
     }
 }
