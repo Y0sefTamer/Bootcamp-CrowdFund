@@ -31,6 +31,7 @@ contract CrowdFund {
         uint256 target,
         uint256 deadline
     );
+    event CancelCampaign(uint256 indexed campaignId);
 
     constructor(address _token) {
         token = IERC20(_token);
@@ -43,5 +44,14 @@ contract CrowdFund {
         campaigns[numberOfCampaigns] = Campaign(msg.sender, _title, _description, _target, _deadline, 0, false);
         numberOfCampaigns++;
         emit CampaignCreated(numberOfCampaigns - 1, msg.sender, _title, _description, _target, _deadline);
+    }
+
+    function cancelCampaign(uint256 _campaignId) external {
+        Campaign storage campaign = campaigns[_campaignId];
+        require(msg.sender == campaign.owner, "Only owner can cancel the campaign");
+        require(block.timestamp < campaign.deadline, "Cannot cancel after deadline");
+        require(campaign.amountCollected == 0, "Cannot cancel a campaign with pledges");
+        delete campaigns[_campaignId];
+        emit CancelCampaign(_campaignId);
     }
 }
