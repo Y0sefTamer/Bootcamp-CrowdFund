@@ -10,6 +10,11 @@ contract CrowdFund {
         uint256 deadline; // timestamp of the deadline
         uint256 amountCollected; //pledge amount
         bool claimed; // whether the campaign has been claimed
-        mapping(address => uint256) donations; // mapping of donors to their donation amounts
     }
+
+    uint256 public numberOfCampaigns ; // Total number of campaigns created and id
+    // state variable to store all campaigns
+    mapping(uint256 => Campaign) public campaigns;
+    mapping(uint256 => mapping(address => uint256)) public pledgeAmount; // mapping of campaignId to donor address to pledge amount
+
 }
