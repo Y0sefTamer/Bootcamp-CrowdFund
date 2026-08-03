@@ -35,6 +35,7 @@ contract CrowdFund {
     event Pledge(uint256 indexed campaignId, address indexed donor, uint256 amount);
     event Unpledge(uint256 indexed campaignId, address indexed donor, uint256 amount);
     event Claim(uint256 indexed campaignId, address indexed owner, uint256 amount);
+    event Refund(uint256 indexed campaignId, address indexed donor, uint256 amount);
 
     constructor(address _token) {
         token = IERC20(_token);
@@ -87,5 +88,17 @@ contract CrowdFund {
         campaign.claimed = true;
         token.transfer(campaign.owner, campaign.amountCollected);
         emit Claim(_campaignId, campaign.owner, campaign.amountCollected);
+    }
+
+    function refund(uint256 _campaignId) external {
+        Campaign storage campaign = campaigns[_campaignId];
+        require(block.timestamp >= campaign.deadline, "Cannot refund before deadline");
+        require(campaign.amountCollected < campaign.target, "Cannot refund if target reached");
+        uint256 pledgedAmount = pledgeAmount[_campaignId][msg.sender];
+        require(pledgedAmount > 0, "No pledged amount to refund");
+        pledgeAmount[_campaignId][msg.sender] = 0;
+        campaign.amountCollected -= pledgedAmount;
+        token.transfer(msg.sender, pledgedAmount);
+        emit Refund(_campaignId, msg.sender, pledgedAmount);
     }
 }
