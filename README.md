@@ -1,66 +1,24 @@
-## Foundry
+# Bootcamp CrowdFund 💰
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A foundational Crowdfunding smart contract project built as part of a Web3 Solidity Bootcamp. This repository demonstrates how to build a decentralized Kickstarter-style application where users can pool funds together to reach a target goal within a specific timeframe.
 
-Foundry consists of:
+## 🌟 Features
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+* **Set Goals & Deadlines:** The contract initializes with a specific funding goal and a time limit (deadline).
+* **Pledging System:** Users can send ETH to the contract to support the campaign.
+* **Claiming Funds:** If the campaign successfully reaches its goal by the deadline, the creator can withdraw the pooled funds.
+* **Trustless Refunds:** If the deadline passes and the goal is *not* met, backers can securely withdraw their pledged ETH. No admin intervention is required.
+* **State Tracking:** Keeps accurate records of total funds raised and individual contributor balances.
 
-## Documentation
+## 🛠️ Tech Stack
 
-https://book.getfoundry.sh/
+* **Smart Contracts:** Solidity `^0.8.27`
+* **Framework:** Foundry
 
-## Usage
+## 🏛️ How It Works
 
-### Build
+1. **Launch:** The creator deploys the contract, setting a `goal` (in wei) and a `deadline` (timestamp).
+2. **Fund:** Backers call the `pledge()` or `fund()` function and send ETH to the contract.
+3. **Outcome A (Success):** If the total pledged equals or exceeds the goal, the campaign is successful. The creator can call `claim()` to transfer the funds to their wallet.
+4. **Outcome B (Failure):** If the deadline passes and the goal hasn't been met, the campaign fails. Backers can call `refund()` to get their exact deposited amount back.
 
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
